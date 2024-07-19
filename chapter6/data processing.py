@@ -2,12 +2,14 @@ import os
 os.getcwd()
 os.chdir('../Head First Python/chapter6')
 
-class Athlete:
-    def __init__(self, a_name='', a_birthday='', a_time=[]):
+''' 繼承內置的list類 '''
+class AthleteList(list): 
+    def __init__(self, a_name, a_birthday=None, a_time=[]):
+        list.__init__([])
         self.name = a_name,
         self.birthday = a_birthday,
-        self.time = a_time
-    
+        self.extend(a_time) #數據本身是計時數據，所以不需要times屬性
+
     def sanitize(self, time_string):
         if '-' in time_string:
             splitter = '-'
@@ -19,20 +21,7 @@ class Athlete:
         return(mins+'.'+secs)
     
     def top3(self):
-        return(sorted(set([self.sanitize(t) for t in self.time]))[0:3])
-    
-    def add_time(self, time_value = None):
-        self.time.append(time_value)
-    
-    def add_times(self, list_of_times = []):
-        self.time.extend(list_of_times)
-        
-    ''' 繼承內置的list類 '''
-    class AthleteList(list):
-        def __init__(self, a_name='', a_birthday='', a_time=[]):
-            self.name = a_name,
-            self.birthday = a_birthday,
-            self.time = a_time
+        return(sorted(set([self.sanitize(t) for t in self]))[0:3])
         
 def get_coach_data(filename):
     try:
@@ -47,12 +36,12 @@ def get_coach_data(filename):
             'birthday':data.pop(0),
             'time':str(sorted(set([self.sanitize(t) for t in data]))[0:3])
         }'''
-        return(Athlete(tem.pop(0),tem.pop(0),tem)) #傳入Athlete後name, birth變tuple
+        return(AthleteList(tem.pop(0),tem.pop(0),tem)) #傳入Athlete後name, birth變tuple
     except IOError as ioerr:
         print('File error:'+str(ioerr))
         return(None)
 
 james = get_coach_data('james2.txt')
-james.add_time('1.50')
+james.append('1.40')
 print(james.name[0]+ "'s fastest times are: "+ str(james.top3()))
 
